@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 from flask_login import UserMixin
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -13,6 +13,26 @@ def utc_now() -> datetime:
 
 class Project(db.Model):
     __tablename__ = "projects"
+    __table_args__ = (
+        CheckConstraint("btrim(title) <> ''", name="projects_title_not_blank"),
+        CheckConstraint("btrim(customer) <> ''", name="projects_customer_not_blank"),
+        CheckConstraint("btrim(contract_subject) <> ''", name="projects_contract_subject_not_blank"),
+        CheckConstraint("btrim(industry) <> ''", name="projects_industry_not_blank"),
+        CheckConstraint("btrim(territory) <> ''", name="projects_territory_not_blank"),
+        CheckConstraint("btrim(short_description) <> ''", name="projects_short_description_not_blank"),
+        CheckConstraint("btrim(full_description) <> ''", name="projects_full_description_not_blank"),
+        CheckConstraint("start_year BETWEEN 1900 AND 2100", name="projects_start_year_range"),
+        CheckConstraint("end_year BETWEEN 1900 AND 2100", name="projects_end_year_range"),
+        CheckConstraint("start_year <= end_year", name="projects_year_range_ordered"),
+        CheckConstraint(
+            "slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'",
+            name="projects_slug_format",
+        ),
+        CheckConstraint(
+            "cover_image_url ~ '^(https?://|/uploads/)'",
+            name="projects_cover_image_url_format",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -42,6 +62,15 @@ class Project(db.Model):
 
 class ProjectImage(db.Model):
     __tablename__ = "project_images"
+    __table_args__ = (
+        CheckConstraint("btrim(alt_text) <> ''", name="project_images_alt_text_not_blank"),
+        CheckConstraint("sort_order >= 0", name="project_images_sort_order_not_negative"),
+        CheckConstraint(
+            "image_url ~ '^(https?://|/uploads/)'",
+            name="project_images_image_url_format",
+        ),
+        UniqueConstraint("project_id", "sort_order", name="project_images_project_sort_order_unique"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), nullable=False, index=True)

@@ -5,15 +5,33 @@ from flask import Response, current_app, redirect, request, url_for
 from flask_admin import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
-from markupsafe import Markup
+from markupsafe import Markup, escape
+from PIL import Image, UnidentifiedImageError
 from wtforms import BooleanField, IntegerField, StringField, TextAreaField
+from wtforms.validators import Length, NumberRange
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from app.extensions import admin, db
 from app.models import AdminUser, Project, ProjectImage, utc_now
+from app.validation import (
+    MAX_IMAGE_DIMENSION,
+    MAX_PROJECT_YEAR,
+    MIN_PROJECT_YEAR,
+    validate_image_url,
+    validate_project_image_values,
+    validate_project_values,
+    validate_required_text,
+    validate_slug,
+)
 
 ALLOWED_IMAGE_EXTENSIONS: set[str] = {"jpg", "jpeg", "png", "webp"}
+IMAGE_FORMAT_BY_EXTENSION: dict[str, str] = {
+    "jpg": "JPEG",
+    "jpeg": "JPEG",
+    "png": "PNG",
+    "webp": "WEBP",
+}
 
 
 def _is_allowed_image(filename: str) -> bool:
@@ -29,6 +47,28 @@ def _create_upload_filename(original_filename: str) -> str:
         raise ValueError("Uploaded image must have a file extension.")
 
     return f"{uuid4().hex}{suffix}"
+
+
+def _verify_uploaded_image(uploaded_file: FileStorage) -> None:
+    filename: str = uploaded_file.filename or ""
+    extension: str = Path(filename).suffix.lower().removeprefix(".")
+    expected_format: str = IMAGE_FORMAT_BY_EXTENSION[extension]
+
+    try:
+        with Image.open(uploaded_file.stream) as image:
+            image_format: str | None = image.format
+            width, height = image.size
+            image.verify()
+    except (Image.DecompressionBombError, UnidentifiedImageError, OSError) as error:
+        raise ValueError("Uploaded file is not a valid image.") from error
+    finally:
+        uploaded_file.stream.seek(0)
+
+    if image_format != expected_format:
+        raise ValueError("Image content does not match its filename extension.")
+
+    if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+        raise ValueError(f"Image dimensions cannot exceed {MAX_IMAGE_DIMENSION} pixels.")
 
 
 class ProtectedModelView(ModelView):
@@ -81,6 +121,19 @@ class ProjectAdminView(ProtectedModelView):
         "cover_image_url": StringField,
         "is_published": BooleanField,
     }
+    form_args = {
+        "title": {"validators": [validate_required_text, Length(max=255)]},
+        "slug": {"validators": [validate_required_text, Length(max=255), validate_slug]},
+        "customer": {"validators": [validate_required_text, Length(max=255)]},
+        "contract_subject": {"validators": [validate_required_text]},
+        "industry": {"validators": [validate_required_text, Length(max=255)]},
+        "territory": {"validators": [validate_required_text, Length(max=255)]},
+        "start_year": {"validators": [NumberRange(min=MIN_PROJECT_YEAR, max=MAX_PROJECT_YEAR)]},
+        "end_year": {"validators": [NumberRange(min=MIN_PROJECT_YEAR, max=MAX_PROJECT_YEAR)]},
+        "short_description": {"validators": [validate_required_text]},
+        "full_description": {"validators": [validate_required_text]},
+        "cover_image_url": {"validators": [validate_required_text, Length(max=500), validate_image_url]},
+    }
 
     def on_model_change(
         self,
@@ -88,6 +141,19 @@ class ProjectAdminView(ProtectedModelView):
         model: Project,
         is_created: bool,
     ) -> None:
+        validate_project_values(
+            title=model.title,
+            slug=model.slug,
+            customer=model.customer,
+            contract_subject=model.contract_subject,
+            industry=model.industry,
+            territory=model.territory,
+            start_year=model.start_year,
+            end_year=model.end_year,
+            short_description=model.short_description,
+            full_description=model.full_description,
+            cover_image_url=model.cover_image_url,
+        )
         timestamp = utc_now()
 
         if is_created:
@@ -106,6 +172,11 @@ class ProjectImageAdminView(ProtectedModelView):
         "alt_text": StringField,
         "sort_order": IntegerField,
     }
+    form_args = {
+        "image_url": {"validators": [validate_required_text, Length(max=500), validate_image_url]},
+        "alt_text": {"validators": [validate_required_text, Length(max=255)]},
+        "sort_order": {"validators": [NumberRange(min=0)]},
+    }
 
     def _preview_formatter(
         self,
@@ -113,7 +184,12 @@ class ProjectImageAdminView(ProtectedModelView):
         model: ProjectImage,
         name: str,
     ) -> Markup:
-        return Markup(f'<img src="{model.image_url}" alt="{model.alt_text}" style="max-width: 140px;">')
+        image_url: Markup = escape(model.image_url)
+        alt_text: Markup = escape(model.alt_text)
+        return Markup('<img src="{}" alt="{}" style="max-width: 140px;">').format(
+            image_url,
+            alt_text,
+        )
 
     column_formatters = {"preview": _preview_formatter}
 
@@ -123,11 +199,17 @@ class ProjectImageAdminView(ProtectedModelView):
         model: ProjectImage,
         is_created: bool,
     ) -> None:
+        validate_project_image_values(
+            image_url=model.image_url,
+            alt_text=model.alt_text,
+            sort_order=model.sort_order,
+        )
         if is_created:
             model.created_at = utc_now()
 
 
 class AdminUserView(ProtectedModelView):
+    can_create = False
     column_list = ("email", "is_active_admin", "created_at")
     column_searchable_list = ("email",)
     form_columns = ("email", "is_active_admin")
@@ -149,6 +231,8 @@ class UploadAdminView(BaseView):
 
             if not _is_allowed_image(uploaded_file.filename):
                 raise ValueError("Only jpg, jpeg, png, and webp images are allowed.")
+
+            _verify_uploaded_image(uploaded_file)
 
             upload_folder = Path(current_app.config["UPLOAD_FOLDER"])
             upload_filename: str = _create_upload_filename(uploaded_file.filename)

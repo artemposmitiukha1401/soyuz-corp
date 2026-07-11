@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /backend/.venv
+*.egg-info/
 /.pnp
 .pnp.*
 .yarn/*

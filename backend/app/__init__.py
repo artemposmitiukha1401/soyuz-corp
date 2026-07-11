@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, send_from_directory
+from flask import Flask, redirect, send_from_directory, url_for
 
 from app.admin import setup_admin_views
 from app.auth import auth_bp
@@ -37,6 +37,14 @@ def create_app() -> Flask:
 
     app.register_blueprint(api_bp)
     app.register_blueprint(auth_bp)
+
+    @app.get("/")
+    def index() -> object:
+        return redirect(url_for("admin.index"))
+
+    @app.get("/admin-check")
+    def admin_check() -> dict[str, str]:
+        return {"adminUrl": "/admin/", "status": "ok"}
 
     @app.get("/uploads/<path:filename>")
     def uploaded_file(filename: str) -> object:

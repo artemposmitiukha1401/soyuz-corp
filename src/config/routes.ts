@@ -90,4 +90,9 @@ export const routeConfig: Record<string, RouteConfig> = {
     title: "Проєктування",
     imageUrl: "/hero-image.avif",
   },
+  "/projects": {
+    label: "Проєкти",
+    title: "Проєкти",
+    imageUrl: "/hero-image.avif",
+  },
 };
