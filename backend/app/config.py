@@ -2,6 +2,9 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+POSTGRESQL_URL_PREFIX: str = "postgresql://"
+PSYCOPG3_URL_PREFIX: str = "postgresql+psycopg://"
+
 
 @dataclass(frozen=True)
 class AppConfig:
@@ -30,10 +33,17 @@ def _read_upload_folder(base_path: Path) -> Path:
     return base_path / upload_folder
 
 
+def _use_psycopg3_driver(database_url: str) -> str:
+    if database_url.startswith(POSTGRESQL_URL_PREFIX):
+        return f"{PSYCOPG3_URL_PREFIX}{database_url.removeprefix(POSTGRESQL_URL_PREFIX)}"
+
+    return database_url
+
+
 def load_config(base_path: Path) -> AppConfig:
     return AppConfig(
         secret_key=_read_required_env("SECRET_KEY"),
-        database_url=_read_required_env("DATABASE_URL"),
+        database_url=_use_psycopg3_driver(_read_required_env("DATABASE_URL")),
         frontend_origin=_read_required_env("FRONTEND_ORIGIN"),
         upload_folder=_read_upload_folder(base_path),
         max_content_length=10 * 1024 * 1024,
