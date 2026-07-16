@@ -13,28 +13,28 @@ type DivisionCard = {
 const aboutCards: DivisionCard[] = [
   {
     id: 1,
-    imageUrl: "/previews/about/our-company.jpg",
+    imageUrl: "/data_images/divisions/alternative_energy/sec_vyd_zverhu.jpg",
     text: 'Департамент альтернативної енергетики',
     link: "/divisions/alternative-energy",
     width: "full",
   },
   {
     id: 2,
-    imageUrl: "/previews/about/projects_geography.jpg",
+    imageUrl: "/data_images/divisions/generation/zastavka_biznes_dyvizion_generatsiya_turbyna_tes.jpg",
     text: 'Бізнес-дивізіон "Генерація"',
     link: "/divisions/generation",
     width: "standard",
   },
   {
     id: 3,
-    imageUrl: "/previews/about/partners.jpg",
+    imageUrl: "/data_images/divisions/networks/ps_750kv_kakhovska.JPG",
     text: 'Бізнес-дивізіон "Мережі"',
     link: "/divisions/networks",
     width: "standard",
   },
   {
     id: 4,
-    imageUrl: "/previews/about/defend-renovate.jpg",
+    imageUrl: "/data_images/divisions/commissioning_bg.jpg",
     text: "Проєктування",
     link: "/divisions/commissioning",
     width: "standard",

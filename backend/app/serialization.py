@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.models import Project, ProjectImage
+from app.models import Project, ProjectImage, Reporting
 
 
 def serialize_project_image(image: ProjectImage) -> dict[str, Any]:
@@ -25,6 +25,7 @@ def serialize_project_card(project: Project) -> dict[str, Any]:
         "endYear": project.end_year,
         "shortDescription": project.short_description,
         "coverImageUrl": project.cover_image_url,
+        "isBigProject": project.is_big_project,
     }
 
 
@@ -36,4 +37,19 @@ def serialize_project_detail(project: Project) -> dict[str, Any]:
         "images": [serialize_project_image(image) for image in project.images],
         "createdAt": project.created_at.isoformat(),
         "updatedAt": project.updated_at.isoformat(),
+    }
+
+
+def serialize_reporting(reporting: Reporting) -> dict[str, Any]:
+    return {
+        "id": reporting.id,
+        "year": reporting.year,
+        "documents": [
+            {
+                "id": document.id,
+                "label": document.label,
+                "fileUrl": document.file_url,
+            }
+            for document in reporting.documents
+        ],
     }

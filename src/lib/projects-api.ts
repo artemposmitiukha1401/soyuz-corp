@@ -9,14 +9,26 @@ export type ProjectCard = {
   startYear: number;
   endYear: number;
   shortDescription: string;
-  coverImageUrl: string;
+  coverImageUrl: string | null;
+  isBigProject: boolean;
 };
+
+export type ProjectFilter = "all" | "big" | "finished";
 
 export type ProjectImage = {
   id: number;
   imageUrl: string;
   altText: string;
   sortOrder: number;
+};
+
+export type ProjectPage = {
+  items: ProjectCard[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  filter: ProjectFilter;
 };
 
 export type ProjectDetail = ProjectCard & {
@@ -52,11 +64,45 @@ const readString = (record: JsonRecord, key: string): string => {
   return value;
 };
 
+const readNullableString = (record: JsonRecord, key: string): string | null => {
+  const value: unknown = record[key];
+
+  if (value === null) {
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new Error(`Invalid project API response: ${key} must be a string or null`);
+  }
+
+  return value;
+};
+
 const readNumber = (record: JsonRecord, key: string): number => {
   const value: unknown = record[key];
 
   if (typeof value !== "number") {
     throw new Error(`Invalid project API response: ${key} must be a number`);
+  }
+
+  return value;
+};
+
+const readBoolean = (record: JsonRecord, key: string): boolean => {
+  const value: unknown = record[key];
+
+  if (typeof value !== "boolean") {
+    throw new Error(`Invalid project API response: ${key} must be a boolean`);
+  }
+
+  return value;
+};
+
+const readProjectFilter = (record: JsonRecord, key: string): ProjectFilter => {
+  const value: unknown = record[key];
+
+  if (value !== "all" && value !== "big" && value !== "finished") {
+    throw new Error(`Invalid project API response: ${key} must be a valid project filter`);
   }
 
   return value;
@@ -91,7 +137,8 @@ const readProjectCard = (value: unknown): ProjectCard => {
     startYear: readNumber(value, "startYear"),
     endYear: readNumber(value, "endYear"),
     shortDescription: readString(value, "shortDescription"),
-    coverImageUrl: readString(value, "coverImageUrl"),
+    coverImageUrl: readNullableString(value, "coverImageUrl"),
+    isBigProject: readBoolean(value, "isBigProject"),
   };
 };
 
@@ -112,6 +159,27 @@ const readProjectDetail = (value: unknown): ProjectDetail => {
     images: images.map(readProjectImage),
     createdAt: readString(value, "createdAt"),
     updatedAt: readString(value, "updatedAt"),
+  };
+};
+
+const readProjectPage = (value: unknown): ProjectPage => {
+  if (!isRecord(value)) {
+    throw new Error("Invalid project API response: page must be an object");
+  }
+
+  const items: unknown = value.items;
+
+  if (!Array.isArray(items)) {
+    throw new Error("Invalid project API response: items must be an array");
+  }
+
+  return {
+    items: items.map(readProjectCard),
+    page: readNumber(value, "page"),
+    pageSize: readNumber(value, "pageSize"),
+    total: readNumber(value, "total"),
+    totalPages: readNumber(value, "totalPages"),
+    filter: readProjectFilter(value, "filter"),
   };
 };
 
@@ -139,14 +207,9 @@ export const getProjectImageUrl = (imageUrl: string): string => {
   return `${getProjectsApiBaseUrl()}${imageUrl}`;
 };
 
-export const getProjects = async (): Promise<ProjectCard[]> => {
-  const data: unknown = await getJson("/api/projects");
-
-  if (!Array.isArray(data)) {
-    throw new Error("Invalid project API response: projects must be an array");
-  }
-
-  return data.map(readProjectCard);
+export const getProjects = async (page: number, projectFilter: ProjectFilter): Promise<ProjectPage> => {
+  const data: unknown = await getJson(`/api/projects?page=${page}&filter=${projectFilter}`);
+  return readProjectPage(data);
 };
 
 export const getProject = async (slug: string): Promise<ProjectDetail> => {

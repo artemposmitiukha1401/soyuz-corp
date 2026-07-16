@@ -26,7 +26,7 @@ const ContactCard = ({
           ({description})
         </h2>
 
-        <p className="max-w-[28rem] font-medium text-current">{address}</p>
+        <p className="max-w-[28rem] font-medium text-secondary">{address}</p>
       </div>
 
       <div aria-hidden="true" className="h-px w-full bg-secondary" />

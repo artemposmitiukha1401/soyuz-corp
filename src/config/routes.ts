@@ -5,6 +5,11 @@ export type RouteConfig = {
 };
 
 export const routeConfig: Record<string, RouteConfig> = {
+  "/gallery": {
+    label: "Галерея",
+    title: "Галерея",
+    imageUrl: "/hero-image.avif",
+  },
   "/about": {
     label: "Про компанію",
     title: "Про нас",

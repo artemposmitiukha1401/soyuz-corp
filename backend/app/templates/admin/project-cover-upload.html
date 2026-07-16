@@ -1,0 +1,32 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1>Upload Project Cover Image</h1>
+  <p>The file is saved in projects-images/project-id/cover and becomes the selected project cover image.</p>
+
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="project_id">Project</label>
+      <select id="project_id" class="form-control" name="project_id" required>
+        <option value="">Choose a project</option>
+        {% for project in projects %}
+          <option value="{{ project.id }}">#{{ project.id }} - {{ project.title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="image">Cover image</label>
+      <input id="image" class="form-control" name="image" type="file" accept=".jpg,.jpeg,.png,.webp" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Upload cover image</button>
+  </form>
+
+  {% if uploaded_url %}
+    <hr>
+    <h2>Cover image updated</h2>
+    <input class="form-control" value="{{ uploaded_url }}" readonly>
+    <div style="margin-top: 16px;">
+      <img src="{{ uploaded_url }}" alt="Uploaded project cover image" style="max-width: 360px; border-radius: 8px;">
+    </div>
+  {% endif %}
+{% endblock %}

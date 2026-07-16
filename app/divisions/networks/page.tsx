@@ -37,7 +37,7 @@ const networksContractServices: NetworksContractService[] = [
 const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   {
     id: 1,
-    imageUrl: "/previews/about/our-company.jpg",
+    imageUrl: "/data_images/divisions/networks/pl_110kv_starokozache_kanal.jpg",
     imageAlt: "Вітрові електростанції у полі",
     title: "Повітряні лінії електропередач",
     description: "",
@@ -57,7 +57,7 @@ const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   },
   {
     id: 2,
-    imageUrl: "/previews/about/projects_geography.jpg",
+    imageUrl: "/data_images/divisions/networks/kabelna_liniya.jpg",
     imageAlt: "Сонячна електростанція",
     title: "Кабельні лінії електропередач",
     description: "",
@@ -75,7 +75,7 @@ const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   },
   {
     id: 3,
-    imageUrl: "/previews/about/defend-renovate.jpg",
+    imageUrl: "/data_images/divisions/networks/lito_spetsializovani_roboti.jpg",
     imageAlt: "Монтаж вітрової електростанції",
     title: "Електричні підстанції",
     description: "",

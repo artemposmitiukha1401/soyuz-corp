@@ -32,6 +32,14 @@ def is_allowed_image_url(value: str) -> bool:
     return parsed_url.scheme in {"http", "https"} and hostname is not None
 
 
+def normalize_optional_image_url(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    normalized_value: str = value.strip()
+    return normalized_value if normalized_value != "" else None
+
+
 def validate_project_values(
     title: str,
     slug: str,
@@ -43,7 +51,7 @@ def validate_project_values(
     end_year: int,
     short_description: str,
     full_description: str,
-    cover_image_url: str,
+    cover_image_url: str | None,
 ) -> None:
     required_text_fields: tuple[tuple[str, str], ...] = (
         (title, "Title"),
@@ -70,7 +78,7 @@ def validate_project_values(
     if start_year > end_year:
         raise ValueError("Start year cannot be later than end year.")
 
-    if not is_allowed_image_url(cover_image_url):
+    if cover_image_url is not None and not is_allowed_image_url(cover_image_url):
         raise ValueError("Cover image must be an HTTP(S) URL or an uploaded /uploads/ path.")
 
 
@@ -98,5 +106,15 @@ def validate_slug(form: object, field: Field) -> None:
 
 def validate_image_url(form: object, field: Field) -> None:
     value: object = field.data
+    if not isinstance(value, str) or not is_allowed_image_url(value):
+        raise ValidationError("Use an HTTP(S) URL or an uploaded /uploads/ path.")
+
+
+def validate_optional_image_url(form: object, field: Field) -> None:
+    value: object = field.data
+
+    if value is None or (isinstance(value, str) and value.strip() == ""):
+        return
+
     if not isinstance(value, str) or not is_allowed_image_url(value):
         raise ValidationError("Use an HTTP(S) URL or an uploaded /uploads/ path.")

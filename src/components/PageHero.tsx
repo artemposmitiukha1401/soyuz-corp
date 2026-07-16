@@ -1,10 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import PageTitleGenerator from "@/src/components/PageTitleGenerator";
+import RandomGalleryHeroImage from "@/src/components/RandomGalleryHeroImage";
 import { routeConfig, type RouteConfig } from "@/src/config/routes";
+import type { GalleryImage } from "@/src/lib/gallery-api";
 
-const PageHero = () => {
+type PageHeroProps = {
+  galleryImages: GalleryImage[];
+  randomSeed: string;
+};
+
+const PageHero = ({ galleryImages, randomSeed }: PageHeroProps) => {
   const pathname: string = usePathname();
   const pageConfig: RouteConfig | undefined = routeConfig[pathname];
 
@@ -13,8 +19,11 @@ const PageHero = () => {
   }
 
   return (
-    <PageTitleGenerator
-      imageUrl={pageConfig.imageUrl}
+    <RandomGalleryHeroImage
+      fallbackImageUrl={pageConfig.imageUrl}
+      images={galleryImages}
+      pageKey={pathname}
+      randomSeed={randomSeed}
       text={pageConfig.title}
     />
   );

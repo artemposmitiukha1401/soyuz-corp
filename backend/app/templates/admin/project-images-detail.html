@@ -1,0 +1,40 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <a class="btn btn-default" href="{{ url_for('project-images.index') }}">Back to projects</a>
+  <a class="btn btn-primary" href="{{ url_for('project-image-upload.index') }}">Upload project image</a>
+  <h1 style="margin-top: 20px;">{{ project.title }}</h1>
+
+  <h2 style="margin-top: 24px;">Cover image</h2>
+  {% if project.cover_image_url %}
+    <div style="margin-bottom: 24px;">
+      <img src="{{ project.cover_image_url }}" alt="Cover image for {{ project.title }}" style="height: 180px; max-width: 100%; object-fit: cover;">
+      <form method="post" onsubmit="return confirm('Delete this cover image?');" style="margin-top: 8px;">
+        <input name="action" type="hidden" value="delete-cover">
+        <button class="btn btn-danger" type="submit">Delete cover image</button>
+      </form>
+    </div>
+  {% else %}
+    <p>This project has no cover image.</p>
+  {% endif %}
+
+  <h2>Project images</h2>
+
+  {% if images %}
+    <div class="row" style="margin-top: 20px;">
+      {% for image in images %}
+        <div class="col-sm-6 col-md-4" style="margin-bottom: 24px;">
+          <img src="{{ image.image_url }}" alt="{{ image.alt_text }}" style="height: 180px; max-width: 100%; object-fit: cover;">
+          <p style="margin-top: 8px; overflow-wrap: anywhere;">{{ image.alt_text }}</p>
+          <form method="post" onsubmit="return confirm('Delete this project image?');">
+            <input name="action" type="hidden" value="delete-image">
+            <input name="image_id" type="hidden" value="{{ image.id }}">
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No images have been uploaded for this project.</p>
+  {% endif %}
+{% endblock %}

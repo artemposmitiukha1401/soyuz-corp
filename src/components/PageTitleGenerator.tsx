@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 type PageTitleGeneratorProps = {
   text: string;
   imageUrl: string;
@@ -7,13 +5,13 @@ type PageTitleGeneratorProps = {
 
 const PageTitleGenerator = ({ text, imageUrl }: PageTitleGeneratorProps) => (
   <section className="relative isolate h-[min(30rem,40svh)] overflow-hidden bg-accent text-secondary">
-    <Image
+    {/* Gallery images are served directly from the configured R2 public URL. */}
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
       src={imageUrl}
       alt=""
-      fill
-      priority
-      sizes="100vw"
-      className="z-[-2] object-cover object-center"
+      fetchPriority="high"
+      className="absolute inset-0 z-[-2] h-full w-full object-cover object-center"
     />
     <div className="absolute inset-0 z-[-1] bg-accent/50" />
 

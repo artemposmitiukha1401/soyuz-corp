@@ -6,7 +6,7 @@ import PdfPreviewModal from "@/src/components/PdfPreviewModal";
 export type ReportingDocumentLink = {
   id: number;
   label: string;
-  fileLink: string;
+  fileUrl: string;
 };
 
 type ReportingDocumentCardProps = {
@@ -21,12 +21,6 @@ const ReportingDocumentCard = ({
   const [activeDocument, setActiveDocument] =
     useState<ReportingDocumentLink | null>(null);
 
-  const visibleDocuments: ReportingDocumentLink[] = documents.filter(
-    (document: ReportingDocumentLink) => document.fileLink.trim().length > 0,
-  );
-  const renderedDocuments: ReportingDocumentLink[] =
-    visibleDocuments.length > 0 ? visibleDocuments : documents.slice(0, 1);
-
   const closeModal = (): void => {
     setActiveDocument(null);
   };
@@ -39,7 +33,7 @@ const ReportingDocumentCard = ({
         </h3>
 
         <div className="flex w-full max-w-80 flex-col gap-5">
-          {renderedDocuments.map((document: ReportingDocumentLink) => (
+          {documents.map((document: ReportingDocumentLink) => (
             <button
               key={document.id}
               type="button"
@@ -79,7 +73,7 @@ const ReportingDocumentCard = ({
       {activeDocument ? (
         <PdfPreviewModal
           title={activeDocument.label}
-          fileLink={activeDocument.fileLink}
+          fileLink={activeDocument.fileUrl}
           onClose={closeModal}
         />
       ) : null}

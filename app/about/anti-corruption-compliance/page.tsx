@@ -68,7 +68,7 @@ const AntiCorruptionCompliance = () => (
           <PdfPreviewCard
             width="full"
             text="Антикорупційна програма"
-            fileLink=""
+            fileLink="/documents/anti_corrupt.pdf"
           />
         
       </div>

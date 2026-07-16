@@ -45,7 +45,8 @@ class Project(db.Model):
     end_year: Mapped[int] = mapped_column(Integer, nullable=False)
     short_description: Mapped[str] = mapped_column(Text, nullable=False)
     full_description: Mapped[str] = mapped_column(Text, nullable=False)
-    cover_image_url: Mapped[str] = mapped_column(String(500), nullable=False)
+    cover_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    is_big_project: Mapped[bool] = mapped_column(Boolean, nullable=False)
     is_published: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
@@ -83,6 +84,47 @@ class ProjectImage(db.Model):
 
     def __str__(self) -> str:
         return self.alt_text
+
+
+class Reporting(db.Model):
+    __tablename__ = "reportings"
+    __table_args__ = (
+        CheckConstraint("year BETWEEN 1900 AND 2100", name="reportings_year_range"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    year: Mapped[int] = mapped_column(Integer, unique=True, index=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    documents: Mapped[list["ReportingDocument"]] = relationship(
+        back_populates="reporting",
+        cascade="all, delete-orphan",
+        order_by="ReportingDocument.created_at",
+    )
+
+    def __str__(self) -> str:
+        return str(self.year)
+
+
+class ReportingDocument(db.Model):
+    __tablename__ = "reporting_documents"
+    __table_args__ = (
+        CheckConstraint("btrim(label) <> ''", name="reporting_documents_label_not_blank"),
+        CheckConstraint("file_url ~ '^https?://'", name="reporting_documents_file_url_format"),
+        CheckConstraint("btrim(storage_key) <> ''", name="reporting_documents_storage_key_not_blank"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    reporting_id: Mapped[int] = mapped_column(ForeignKey("reportings.id"), nullable=False, index=True)
+    label: Mapped[str] = mapped_column(String(255), nullable=False)
+    file_url: Mapped[str] = mapped_column(String(500), nullable=False)
+    storage_key: Mapped[str] = mapped_column(String(500), nullable=False, unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    reporting: Mapped[Reporting] = relationship(back_populates="documents")
+
+    def __str__(self) -> str:
+        return self.label
 
 
 class AdminUser(UserMixin, db.Model):

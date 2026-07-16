@@ -1,0 +1,35 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1>Reportings</h1>
+  <p>Create a reporting card for a year, then add labeled PDF documents to it.</p>
+
+  <form method="post" class="form-inline" style="margin-bottom: 28px;">
+    <input name="action" type="hidden" value="create-reporting">
+    <div class="form-group">
+      <label class="sr-only" for="year">Year</label>
+      <input id="year" class="form-control" name="year" type="number" min="1900" max="2100" placeholder="Year" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Create reporting</button>
+  </form>
+
+  {% if reportings %}
+    <div class="list-group">
+      {% for reporting in reportings %}
+        <div class="list-group-item">
+          <a href="{{ url_for('reportings.reporting_detail', reporting_id=reporting.id) }}">
+            <strong>{{ reporting.year }}</strong>
+          </a>
+          <span class="badge badge-primary">{{ document_counts.get(reporting.id, 0) }} documents</span>
+          <form method="post" style="display: inline-block; margin-left: 12px;" onsubmit="return confirm('Delete this reporting and all its documents?');">
+            <input name="action" type="hidden" value="delete-reporting">
+            <input name="reporting_id" type="hidden" value="{{ reporting.id }}">
+            <button class="btn btn-danger btn-xs" type="submit">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No reportings have been created yet.</p>
+  {% endif %}
+{% endblock %}

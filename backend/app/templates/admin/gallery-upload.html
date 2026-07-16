@@ -1,0 +1,45 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1>Upload Gallery Image</h1>
+  <p>Upload an image to the R2 gallery. It will appear on the public gallery page immediately.</p>
+
+  <form method="post" enctype="multipart/form-data">
+    <input name="action" type="hidden" value="upload">
+    <div class="form-group">
+      <label for="image">Image</label>
+      <input id="image" class="form-control" name="image" type="file" accept=".jpg,.jpeg,.png,.webp" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Upload to gallery</button>
+  </form>
+
+  {% if uploaded_url %}
+    <hr>
+    <h2>Uploaded successfully</h2>
+    <input class="form-control" value="{{ uploaded_url }}" readonly>
+    <div style="margin-top: 16px;">
+      <img src="{{ uploaded_url }}" alt="Uploaded gallery image" style="max-width: 360px; border-radius: 8px;">
+    </div>
+  {% endif %}
+
+  <hr>
+  <h2>Gallery images</h2>
+
+  {% if gallery_images %}
+    <div class="row">
+      {% for image in gallery_images %}
+        <div class="col-sm-6 col-md-4" style="margin-bottom: 24px;">
+          <img src="{{ image.url }}" alt="{{ image.alt_text }}" style="height: 180px; max-width: 100%; object-fit: cover;">
+          <p style="margin-top: 8px; overflow-wrap: anywhere;">{{ image.key }}</p>
+          <form method="post" onsubmit="return confirm('Delete this gallery image?');">
+            <input name="action" type="hidden" value="delete">
+            <input name="image_key" type="hidden" value="{{ image.key }}">
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No images have been uploaded to the gallery yet.</p>
+  {% endif %}
+{% endblock %}

@@ -22,6 +22,7 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["MAX_CONTENT_LENGTH"] = config.max_content_length
     app.config["UPLOAD_FOLDER"] = str(config.upload_folder)
+    app.config["R2_CONFIG"] = config.r2
 
     config.upload_folder.mkdir(parents=True, exist_ok=True)
 

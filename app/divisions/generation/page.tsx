@@ -68,7 +68,7 @@ export default function Generation() {
 
             <div className="relative min-h-[19rem] flex-1 overflow-hidden sm:min-h-[26rem] lg:min-h-[28rem]">
               <Image
-                src="/previews/about/about_mainimage_2.jpg"
+                src="/data_images/divisions/generation/burshtynska_tes.jpg"
                 alt="Монтаж обладнання енергетичної інфраструктури"
                 fill
                 priority
@@ -125,7 +125,7 @@ export default function Generation() {
             className="relative min-h-[22rem] overflow-hidden rounded-md lg:h-full"
           >
             <Image
-              src="/previews/about/defend-renovate.jpg"
+              src="/data_images/divisions/generation/mini_tecz.JPG"
               alt="Енергетичне обладнання на промисловому майданчику"
               fill
               sizes="(max-width: 1024px) calc(100vw - 2rem), 42vw"

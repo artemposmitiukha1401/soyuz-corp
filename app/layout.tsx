@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { randomUUID } from "node:crypto";
 import localFont from "next/font/local";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import Breadcrumbs from "@/src/components/Breadcrumbs";
+import { BreadcrumbProjectTitleProvider } from "@/src/components/BreadcrumbProjectTitle";
 import PageHero from "@/src/components/PageHero";
+import { getGalleryImages, type GalleryImage } from "@/src/lib/gallery-api";
 
 const fixel = localFont({
   src: [
@@ -35,19 +38,25 @@ export const metadata: Metadata = {
   description: "Ukrainian energy company",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const galleryImages: GalleryImage[] = await getGalleryImages();
+  const heroRandomSeed: string = randomUUID();
+
   return (
     <html lang="en" className={`${fixel.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="relative flex-1">
-          <Breadcrumbs/>
-          <PageHero/>
-          {children}</main>
+          <BreadcrumbProjectTitleProvider>
+            <Breadcrumbs />
+            <PageHero galleryImages={galleryImages} randomSeed={heroRandomSeed} />
+            {children}
+          </BreadcrumbProjectTitleProvider>
+        </main>
         <Footer  />
       </body>
     </html>

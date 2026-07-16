@@ -1,0 +1,53 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <a class="btn btn-default" href="{{ url_for('reportings.index') }}">Back to reportings</a>
+  <h1 style="margin-top: 20px;">Reporting {{ reporting.year }}</h1>
+  <p>PDF files are stored in R2 under <code>documents/{{ reporting.year }}/</code>.</p>
+
+  <h2>Add document</h2>
+  <form method="post" enctype="multipart/form-data">
+    <input name="action" type="hidden" value="upload-document">
+    <div class="form-group">
+      <label for="label">Document label</label>
+      <input id="label" class="form-control" name="label" maxlength="255" placeholder="For example: Financial reporting" required>
+    </div>
+    <div class="form-group">
+      <label for="document">PDF document</label>
+      <input id="document" class="form-control" name="document" type="file" accept="application/pdf,.pdf" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Upload PDF</button>
+  </form>
+
+  <hr>
+  <h2>Documents</h2>
+
+  {% if documents %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Label</th>
+          <th>R2 folder</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for document in documents %}
+          <tr>
+            <td><a href="{{ document.file_url }}" target="_blank" rel="noopener noreferrer">{{ document.label }}</a></td>
+            <td><code>{{ document.storage_key }}</code></td>
+            <td>
+              <form method="post" onsubmit="return confirm('Delete this PDF document?');">
+                <input name="action" type="hidden" value="delete-document">
+                <input name="document_id" type="hidden" value="{{ document.id }}">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No documents have been uploaded for {{ reporting.year }} yet.</p>
+  {% endif %}
+{% endblock %}

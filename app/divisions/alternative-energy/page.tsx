@@ -9,7 +9,8 @@ type AlternativeEnergyInfoCard = HorizontalInfoCardObject & {
 const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   {
     id: 1,
-    imageUrl: "/previews/about/our-company.jpg",
+    
+    imageUrl: "/data_images/divisions/alternative_energy/vg_vestas.jpg",
     imageAlt: "Вітрові електростанції у полі",
     title: "Відновлювана енергетика",
     description:
@@ -25,7 +26,7 @@ const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   },
   {
     id: 2,
-    imageUrl: "/previews/about/projects_geography.jpg",
+    imageUrl: "/data_images/divisions/alternative_energy/sec_vyd_zverhu.jpg",
     imageAlt: "Сонячна електростанція",
     title: "Сонячні електростанції",
     description:
@@ -42,7 +43,7 @@ const alternativeEnergyInfoCards: AlternativeEnergyInfoCard[] = [
   },
   {
     id: 3,
-    imageUrl: "/previews/about/defend-renovate.jpg",
+    imageUrl: "/data_images/divisions/alternative_energy/orlovska_vec.jpg",
     imageAlt: "Монтаж вітрової електростанції",
     title: "Вітряні електростанції",
     description:

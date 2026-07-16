@@ -1,60 +1,24 @@
-import ReportingDocumentCard, {
-  type ReportingDocumentLink,
-} from "@/src/components/ReportingDocumentCard";
+import ReportingDocumentCard from "@/src/components/ReportingDocumentCard";
+import { getReportings, type Reporting } from "@/src/lib/reportings-api";
 
-type ReportingCard = {
-  id: number;
-  title: string;
-  documents: ReportingDocumentLink[];
+const Reporting = async () => {
+  const reportings: Reporting[] = await getReportings();
+
+  return (
+    <section>
+      <div className="page-container grid grid-cols-1 gap-6 md:grid-cols-2">
+        {reportings
+          .filter((reporting: Reporting) => reporting.documents.length > 0)
+          .map((reporting: Reporting) => (
+            <ReportingDocumentCard
+              key={reporting.id}
+              title={String(reporting.year)}
+              documents={reporting.documents}
+            />
+          ))}
+      </div>
+    </section>
+  );
 };
-
-const reportingCards: ReportingCard[] = [
-  {
-    id: 1,
-    title: "2021",
-    documents: [
-      {
-        id: 1,
-        label: "Фінансова звітність",
-        fileLink: "dfdfggg",
-      },
-      {
-        id: 2,
-        label: "Звітність про управління",
-        fileLink: "dssdfgd",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "2022",
-    documents: [
-      {
-        id: 1,
-        label: "Фінансова звітність",
-        fileLink: "",
-      },
-      {
-        id: 2,
-        label: "Звітність про управління",
-        fileLink: "",
-      },
-    ],
-  },
-];
-
-const Reporting = () => (
-  <section>
-    <div className="page-container grid grid-cols-1 gap-6 md:grid-cols-2">
-      {reportingCards.map((card: ReportingCard) => (
-        <ReportingDocumentCard
-          key={card.id}
-          title={card.title}
-          documents={card.documents}
-        />
-      ))}
-    </div>
-  </section>
-);
 
 export default Reporting;

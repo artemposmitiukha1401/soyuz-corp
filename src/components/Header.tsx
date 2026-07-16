@@ -88,6 +88,24 @@ const serviceDropdownLinks: HeaderDropdownLink[] = [
   
 ];
 
+const projectDropdownLinks: HeaderDropdownLink[] = [
+  {
+    id: 1,
+    label: "Усі проєкти",
+    href: "/projects?filter=all&page=1",
+  },
+  {
+    id: 2,
+    label: "Великі проєкти",
+    href: "/projects?filter=big&page=1",
+  },
+  {
+    id: 3,
+    label: "Завершені проєкти",
+    href: "/projects?filter=finished&page=1",
+  },
+];
+
 const links: HeaderNavigationItem[] = [
   {
     id: 1,
@@ -105,11 +123,12 @@ const links: HeaderNavigationItem[] = [
     id: 3,
     label: "Проєкти",
     href: "/projects",
+    children: projectDropdownLinks,
   },
   {
     id: 4,
     label: "Медіа",
-    href: "/media",
+    href: "/gallery",
   },
   {
     id: 5,
