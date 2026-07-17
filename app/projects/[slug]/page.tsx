@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cache } from "react";
+import type { Metadata } from "next";
 
 import {
   getProject,
@@ -17,6 +19,23 @@ type ProjectsDetailPageProps = {
 };
 
 const projectPreviewFallbackUrl: string = "/logo.svg";
+
+const loadProject = cache(async (slug: string): Promise<ProjectDetail> => getProject(slug));
+
+export async function generateMetadata({ params }: ProjectsDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  try {
+    const project: ProjectDetail = await loadProject(slug);
+    return { title: project.title };
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message.includes("status=404")) {
+      notFound();
+    }
+
+    throw error;
+  }
+}
 
 const projectRows = (project: ProjectDetail): { label: string; value: string }[] => [
   {
@@ -50,7 +69,7 @@ export default async function ProjectDetailPage({ params }: ProjectsDetailPagePr
   let project: ProjectDetail;
 
   try {
-    project = await getProject(slug);
+    project = await loadProject(slug);
   } catch (error: unknown) {
     if (error instanceof Error && error.message.includes("status=404")) {
       notFound();

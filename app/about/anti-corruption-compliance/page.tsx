@@ -1,4 +1,7 @@
 import PdfPreviewCard from "@/src/components/PdfPreviewCard";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Антикорупційний комплаєнс");
 
 const hotlineItems: string[] = [
   "Уповноважений з антикорупційної діяльності: Кучеренко Дмитро",

@@ -8,6 +8,9 @@ import {
   type ProjectFilter,
   type ProjectPage,
 } from "@/src/lib/projects-api";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Проєкти");
 
 type ProjectsPageProps = {
   searchParams: Promise<{

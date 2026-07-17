@@ -1,5 +1,8 @@
 import ReportingDocumentCard from "@/src/components/ReportingDocumentCard";
 import { getReportings, type Reporting } from "@/src/lib/reportings-api";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Звітність");
 
 const Reporting = async () => {
   const reportings: Reporting[] = await getReportings();

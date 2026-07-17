@@ -1,3 +1,7 @@
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Захищаємо та відновлюємо");
+
 type ProtectAndRestoreItem = {
   id: number;
   text: string;

@@ -1,6 +1,9 @@
 import PdfPreviewCard, {
   type PdfPreviewCardWidth,
 } from "@/src/components/PdfPreviewCard";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Наші досягнення");
 
 type AchievementDocumentCard = {
   id: number;
@@ -14,13 +17,13 @@ const achievementDocumentCards: AchievementDocumentCard[] = [
     id: 1,
     width: "standard",
     text: "Почесна грамота КМУ",
-    fileLink: "",
+    fileLink: "/diplomas/soyuz_pochesna_gramota_kmu_2021.pdf",
   },
   {
     id: 2,
     width: "standard",
     text: "Почесна грамота ОДА",
-    fileLink: "",
+    fileLink: "/diplomas/soyuz_pochesna_gramota_oda_2021.pdf",
   },
 ];
 

@@ -1,3 +1,7 @@
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Кар'єра");
+
 type CareerSpecialist = {
   id: number;
   title: string;

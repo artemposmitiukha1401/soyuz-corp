@@ -1,5 +1,8 @@
 import GalleryGrid from "@/src/components/GalleryGrid";
 import { getGalleryImages, type GalleryImage } from "@/src/lib/gallery-api";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Галерея");
 
 export default async function GalleryPage() {
   const images: GalleryImage[] = await getGalleryImages();

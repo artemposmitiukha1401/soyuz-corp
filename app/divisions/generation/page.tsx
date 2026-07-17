@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata('Бізнес-дивізіон "Генерація"');
 
 type GenerationFeature = {
   id: number;

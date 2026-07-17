@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Наближаємо перемогу");
 
 const ReachingWin = () => {
   return (

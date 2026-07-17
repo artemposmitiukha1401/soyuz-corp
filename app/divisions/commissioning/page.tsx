@@ -1,3 +1,7 @@
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Проєктування");
+
 type CommissioningTextItem = {
   id: number;
   text: string;

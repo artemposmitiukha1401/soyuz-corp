@@ -1,6 +1,9 @@
 import AboutSectionCard, {
   type SectionPreviewCard,
 } from "@/src/components/SectionPreviewCard";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Про компанію");
 
 type AboutCard = {
   id: number;

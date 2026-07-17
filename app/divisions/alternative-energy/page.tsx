@@ -1,6 +1,9 @@
 import HorizontalInfoCard, {
   type HorizontalInfoCardObject,
 } from "@/src/components/HorizontalInfoCard";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Департамент альтернативної енергетики");
 
 type AlternativeEnergyInfoCard = HorizontalInfoCardObject & {
   id: number;

@@ -1,6 +1,9 @@
 import ContactCard, {
   type ContactCardProps,
 } from "@/src/components/ContactCard";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Контакти");
 
 type ContactOffice = ContactCardProps & {
   id: number;

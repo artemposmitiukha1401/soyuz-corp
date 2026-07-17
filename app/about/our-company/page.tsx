@@ -2,6 +2,9 @@ import PdfPreviewCard, {
   type PdfPreviewCardWidth,
 } from "@/src/components/PdfPreviewCard";
 import Image from "next/image";
+import { createPageMetadata } from "@/src/lib/page-metadata";
+
+export const metadata = createPageMetadata("Корпорація «СОЮЗ»");
 
 type AboutInformationImage = {
   src: string;

@@ -34,8 +34,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Soyuz Corp",
-  description: "Ukrainian energy company",
+  title: {
+    default: "Корпорація «СОЮЗ»",
+    template: "%s | Корпорація «СОЮЗ»",
+  },
+  description: "Українська енергетична компанія",
 };
 
 export default async function RootLayout({
