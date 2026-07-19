@@ -50,7 +50,11 @@ export default async function RootLayout({
   const heroRandomSeed: string = randomUUID();
 
   return (
-    <html lang="en" className={`${fixel.variable} ${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${fixel.variable} ${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="relative flex-1">

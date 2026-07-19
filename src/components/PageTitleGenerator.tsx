@@ -5,7 +5,6 @@ type PageTitleGeneratorProps = {
 
 const PageTitleGenerator = ({ text, imageUrl }: PageTitleGeneratorProps) => (
   <section className="relative isolate h-[min(30rem,40svh)] overflow-hidden bg-accent text-secondary">
-    {/* Gallery images are served directly from the configured R2 public URL. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
       src={imageUrl}
@@ -15,8 +14,8 @@ const PageTitleGenerator = ({ text, imageUrl }: PageTitleGeneratorProps) => (
     />
     <div className="absolute inset-0 z-[-1] bg-accent/50" />
 
-    <div className="page-container flex h-full items-center justify-center">
-      <h1 className="max-w-5xl text-center text-[clamp(2.75rem,6vw,4rem)] leading-none font-semibold text-secondary uppercase">
+    <div className="page-container flex h-full min-w-0 items-center justify-center px-4">
+      <h1 className="max-w-full break-words text-center text-[clamp(1.75rem,8vw,4rem)] leading-[1.05] font-semibold text-balance text-secondary uppercase sm:text-[clamp(2.2rem,6vw,4rem)]">
         {text}
       </h1>
     </div>

@@ -317,7 +317,7 @@ const Header = () => {
         id="mobile-navigation"
         className={`absolute inset-x-0 top-full border-t border-secondary/15 bg-accent shadow-lg transition duration-300 lg:hidden ${isMobileMenuOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0"}`}
       >
-        <nav className="page-container flex max-h-[calc(100svh-5.5rem)] flex-col overflow-y-auto py-4 text-base font-medium">
+        <nav className="page-container flex max-h-[calc(100svh-5.5rem)] flex-col gap-3 overflow-y-auto py-4 text-base font-medium">
           {links.map((link: HeaderNavigationItem) => {
             const isGroupOpen: boolean = openMobileGroupId === link.id;
 
